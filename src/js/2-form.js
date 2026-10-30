@@ -1,40 +1,37 @@
 const STORAGE_KEY = 'feedback-form-state';
 
-// 1. Оголошення стану
-const formState = {
+// Змінили назву з formState на formData
+const formData = {
   email: '',
   message: '',
 };
 
 const form = document.querySelector('.feedback-form');
 
-// 3. Перевірка та відновлення даних при завантаженні
 const savedData = localStorage.getItem(STORAGE_KEY);
 
 if (savedData) {
   try {
     const parsedData = JSON.parse(savedData);
-    formState.email = parsedData.email?.trim() || '';
-    formState.message = parsedData.message?.trim() || '';
+    formData.email = parsedData.email?.trim() || '';
+    formData.message = parsedData.message?.trim() || '';
 
-    form.elements.email.value = formState.email;
-    form.elements.message.value = formState.message;
+    form.elements.email.value = formData.email;
+    form.elements.message.value = formData.message;
   } catch (error) {
     console.error('Error parsing stored form data:', error);
   }
 }
 
-// 2. Відстеження змін у формі (Event Delegation)
 form.addEventListener('input', event => {
   const { name, value } = event.target;
 
-  if (name in formState) {
-    formState[name] = value.trim();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formState));
+  if (name in formData) {
+    formData[name] = value.trim();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
   }
 });
 
-// 4. Обробка сабміту
 form.addEventListener('submit', event => {
   event.preventDefault();
 
@@ -46,15 +43,13 @@ form.addEventListener('submit', event => {
     return;
   }
 
-  // Записуємо актуальні значення перед виводом
-  formState.email = currentEmail;
-  formState.message = currentMessage;
+  formData.email = currentEmail;
+  formData.message = currentMessage;
 
-  console.log(formState);
+  console.log(formData);
 
-  // Очищення сховища, об'єкта та полів форми
   localStorage.removeItem(STORAGE_KEY);
-  formState.email = '';
-  formState.message = '';
+  formData.email = '';
+  formData.message = '';
   form.reset();
 });
